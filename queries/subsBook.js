@@ -2,26 +2,28 @@ import gql from 'graphql-tag'
 import { Subscription } from 'react-apollo'
 
 export default () => {
-    const booksQuery = gql`
-        subscription onBookStream{
-            bookAdded{
-                id
-                name
-                description
-                author{
-                id
-                name
-                bio
-                }
-            }
+    const subscription = gql`
+    subscription onBookAdded{
+        bookAdded{
+            id
+            name
+            description
         }
+    }  
     `
 
 
     return (
-        <Subscription subscription={booksQuery}>
-            {({ data }) => {
-                return <h3>Newest Book: {!data ? "waiting..." : data.bookAdded}</h3>
+        <Subscription subscription={subscription}>
+            {({ data, loading }) => {
+                if (loading) {
+                    return (
+                        <div>Loading</div>
+                    )
+                }
+                return (
+                    <div>{data.bookAdded.name}</div>
+                )
             }}
         </Subscription>
     )
